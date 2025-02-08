@@ -11,6 +11,7 @@ PIECE_MAP = {'P': PAWN, 'N': KNIGHT, 'B': BISHOP, 'R': ROOK,
              'Q': QUEEN, 'K': KING}
 
 
+
 # 0x88 board coordinate transformations (all 0-indexed)
 # rank index 0-7 encodes ranks 1-8
 # file index 0-7 encodes files a-h
@@ -46,12 +47,15 @@ class Position:
 
     """
 
+    board = [EMPTY] * 128
+    black_move = False
+    castling = None  # subset of "KQkq" for now
+
+
+
     def __init__(self, fen):
-        self.board = [EMPTY] * 128
-
-
-        piece_place, side, castling, ep_target, halfmove, movecounter = \
-            fen.split()
+        (piece_place, side, self.castling, self.ep_target,
+         halfmove, movecounter) = fen.split()
 
         place_rank = piece_place.split('/')
         if len(place_rank) != 8:
@@ -80,9 +84,12 @@ class Position:
 
                     file += 1
 
-
             if file != 8:
                 raise ValueError("Incorrect rank placement")
+
+        self.black_move = side == 'b'
+        self.halfmove = int(halfmove)
+        self.movecounter = int(movecounter)
 
 
 
@@ -105,3 +112,9 @@ def test_fen():
                 assert piece == -rank0[f]
             else:
                 assert piece == EMPTY
+
+    assert start_pos.castling == "KQkq"
+    assert start_pos.black_move == False
+    assert start_pos.halfmove == 0
+    assert start_pos.movecounter == 1
+
