@@ -23,11 +23,11 @@ def sqvalid(ind):
 
 
 # needed?
-def sqrank(ind):
+def sqfile(ind):
     return ind & 0x7
 
 
-def sqfile(ind):
+def sqrank(ind):
     assert (ind >> 4) < 8
     return ind >> 4
 
@@ -35,7 +35,7 @@ def sqfile(ind):
 def sqname(ind: int) -> str:
     """Get algebraic coordinates from square index."""
     assert sqvalid(ind)
-    return "abcdefgh"[sqrank(ind)] + str(sqfile(ind) + 1)
+    return "abcdefgh"[sqfile(ind)] + str(sqrank(ind) + 1)
 
 
 class Position:
@@ -139,4 +139,4 @@ def test_sqvalid():
 
 def test_sqname():
     assert sqname(0x00) == "a1"
-    assert sqname(0x77) == "h8"
+    assert sqname(0x57) == "h6"
