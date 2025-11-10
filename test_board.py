@@ -1,15 +1,30 @@
 from board import *
 
+def test_is_piece_black():
+    assert is_piece_black(-KING)
+    assert not is_piece_black(KNIGHT)
+    assert not is_piece_black(EMPTY)
+
+
 def test_sq_valid():
     assert sq_valid(0x00)
     assert sq_valid(0x77)
     assert not sq_valid(0x80)
-    assert not sq_valid(-1)
+    assert not sq_valid(-1)  # maybe not necessary
 
 
-def test_sq_name():
-    assert sq_name(0x00) == "a1"
-    assert sq_name(0x57) == "h6"
+def test_sq_col():
+    assert sq_col(0x54) == 4
+
+
+def test_sq_row():
+    assert sq_row(0x54) == 5
+
+
+def test_sq_to_coord():
+    assert sq_to_coord(0x00) == "a1"
+    assert sq_to_coord(0x57) == "h6"
+
 
 
 def test_fen():

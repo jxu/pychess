@@ -19,7 +19,13 @@ Note that square a1 is 0x00
 1 00 01 02 03 04 05 06 07|08 09 0A 0B 0C 0D 0E 0F
 ^ rank
 
+A square is represented by an index into a 128 entry 0x88 board
+Uses an int instead of object for efficiency
+
+Square Coordinates are file-rank combo like h8
 """
+
+START_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 
 # Piece definitions (negative for black)
@@ -42,44 +48,52 @@ PIECE_MAP = {
 }
 
 def is_piece_black(piece):
+    # treats 0 as not black
     return piece < 0
 
 # 0x88 board coordinate transformations
-# A square is represented by an index into a 128 entry 0x88 board
-# Uses an int for efficiency
 
-# row 0-7 encodes ranks 1-8
-# file index 0-7 encodes files a-h
 def sq_index(row, col):
     assert 0 <= row <= 7 and 0 <= col <= 7
     return 16 * row + col
 
 
 def sq_valid(sq):
-    """Check if sq is a valid square on the chessboard."""
+    """Check if sq is a valid 0x88 square."""
     return (sq & 0x88) == 0  # the magic
 
 
 def sq_col(sq):
-    """Get square column 0-7 (corresponds to files 1-8)"""
-    return sq & 0x7
+    """Get square's column 0-7 (corresponds to files a-h)"""
+    return sq & 0x7  # low nibble
 
 
 def sq_row(sq):
-    """Get square row 0-7 (corresponds to rows a-h)"""
-    return sq >> 4
+    """Get square's row 0-7 (corresponds to ranks 1-8)"""
+    return sq >> 4  # high nibble
 
 
-def sq_name(sq: int) -> str:
+def sq_to_coord(sq: int) -> str:
     """Get algebraic coordinates from square index."""
     assert sq_valid(sq)
-    return "abcdefgh"[sq_col(sq)] + str(sq_row(sq) + 1)
+    file = "abcdefgh"[sq_col(sq)]
+    row = str(sq_row(sq) + 1)
+    return file + row
 
 
-def sq_name_valid(sq_name: str):
-    return ((len(sq_name) == 2) and 
-            (sq_name[0] in "abcdefgh") and 
-            (sq_name[1] in "12345678"))
+def sq_from_coord(coord: str) -> int:
+    """Get square index from algebraic coordinates."""
+    assert is_coord_valid(coord)
+    col = ord(coord[0]) - ord('a')
+    row = ord(coord[1]) - ord('1')
+    return sq_index(row, col)
+    
+
+def is_coord_valid(coord: str) -> bool:
+    """Check if a string is a valid algebraic coordinate."""
+    return ((len(coord) == 2) and
+            (coord[0] in "abcdefgh") and 
+            (coord[1] in "12345678"))
 
 
 class Position:
@@ -105,7 +119,7 @@ class Position:
         self.ep_target = fen_split[3]
 
         assert (self.ep_target == '-' or 
-            (sq_name_valid(self.ep_target) and self.ep_target[1] in "36"))
+            (is_coord_valid(self.ep_target) and self.ep_target[1] in "36"))
 
         self.halfmove = int(fen_split[4])
 
@@ -141,33 +155,6 @@ class Position:
 
             if file != 8:
                 raise ValueError("Incorrect rank placement")
-
-
-START_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-
-def test_fen():
-    start_pos = Position(START_FEN)
-
-    rank0 = (ROOK, KNIGHT, BISHOP, QUEEN, KING, BISHOP, KNIGHT, ROOK)
-
-    for r in range(8):
-        for f in range(8):
-            piece = start_pos.board[sq_index(r, f)]
-            if r == 0:
-                assert piece == rank0[f]
-            elif r == 1:
-                assert piece == PAWN
-            elif r == 6:
-                assert piece == -PAWN
-            elif r == 7:
-                assert piece == -rank0[f]
-            else:
-                assert piece == EMPTY
-
-    assert start_pos.castling == "KQkq"
-    assert start_pos.black_move == False
-    assert start_pos.halfmove == 0
-    assert start_pos.fullmove == 1
 
 
 
