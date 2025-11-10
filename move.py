@@ -25,4 +25,4 @@ class Move:
 
 
 def test_move_str():
-    assert str(Move(0x00, 0x77)) == "a1h8"
+    assert str(Move(0x00, 0x12)) == "a1c2"
