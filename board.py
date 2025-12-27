@@ -43,6 +43,9 @@ class Square(IntEnum):
 # Convenience alias
 SQ = Square
 
+# for computation, use int
+square = int
+
 class PieceType(IntEnum):
     """Piece TYPE (colorless)"""
     EMPTY   = 0
@@ -88,7 +91,7 @@ PIECETYPE_MAP = {
 class Color(IntEnum):
     BLACK = -1
     WHITE = 1
-    NEUTRAL = 0
+    NEUTRAL = 0  # may simplify checking
 
 # castling flag indices
 class CastleIndex(IntEnum):
@@ -120,35 +123,34 @@ def invert_color(color: Color) -> Color:
 def invert_piece(piece_code: PieceCode) -> PieceCode:
     """Change PieceCode color"""
     assert get_color(piece_code) != Color.NEUTRAL
-    return PieceCode(-int(PieceCode))
+    return PieceCode(-piece_code)
 
 
 def get_piece_type(piece_code: PieceCode) -> PieceType:
     return PieceType(abs(piece_code))
 
 # 0x88 board coordinate transformations
-
-def sq_index(row: int, col: int) -> Square:
+def sq_index(row: int, col: int) -> square:
     assert 0 <= row <= 7 and 0 <= col <= 7
-    return Square(16 * row + col)
+    return 16 * row + col
 
 
-def sq_valid(sq: int) -> bool:
+def sq_valid(sq: square) -> bool:
     """Check if sq is a valid 0x88 square."""
     return (sq & 0x88) == 0  # the magic
 
 
-def sq_col(sq: Square) -> int:
+def sq_col(sq: square) -> int:
     """Get square's column 0-7 (corresponds to files a-h)"""
     return sq & 0x7  # low nibble
 
 
-def sq_row(sq: Square) -> int:
+def sq_row(sq: square) -> int:
     """Get square's row 0-7 (corresponds to ranks 1-8)"""
     return sq >> 4  # high nibble
 
 
-def sq_to_coord(sq: Square) -> str:
+def sq_to_coord(sq: square) -> str:
     """Get algebraic coordinates from square index."""
     assert sq_valid(sq)
     file = "abcdefgh"[sq_col(sq)]

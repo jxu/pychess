@@ -11,6 +11,14 @@ def test_get_piece_type():
     assert get_piece_type(PieceCode.WKNIGHT) == PieceType.KNIGHT
 
 
+def test_invert_color():
+    assert invert_color(Color.WHITE) == Color.BLACK
+
+
+def test_invert_piece():
+    assert invert_piece(PieceCode.WKNIGHT) == PieceCode.BKNIGHT
+
+
 def test_sq_index():
     assert sq_index(1, 2) == 0x12
 
