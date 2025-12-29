@@ -10,49 +10,44 @@ class Direction(IntEnum):
     SW = S + W
     NW = N + W
 
-    # knight moves
-    NNE = N + NE
-    NNW = N + NW
-    ENE = E + NE
-    ESE = E + SE
-    SSE = S + SE
-    SSW = S + SW
-    WNW = W + NW
-    WSW = W + SW
 
 Dir = Direction
+
+KNIGHT_DIRECTIONS = (
+    Dir.N + Dir.NW,
+    Dir.N + Dir.NE,
+    Dir.E + Dir.NE,
+    Dir.E + Dir.SE,
+    Dir.S + Dir.SE,
+    Dir.S + Dir.SW,
+    Dir.W + Dir.SW,
+    Dir.W + Dir.NW,
+)
 
 PIECE_DIR = {
     PieceType.ROOK: (Dir.N, Dir.E, Dir.S, Dir.W),
     PieceType.BISHOP: (Dir.NE, Dir.SE, Dir.SW, Dir.NW),
-    PieceType.KNIGHT: (Dir.NNE, Dir.NNW, Dir.ENE, Dir.ESE,
-                       Dir.SSE, Dir.SSW, Dir.WNW, Dir.WSW)
+
 }
 PIECE_DIR[PT.QUEEN] = (PIECE_DIR[PT.ROOK] + PIECE_DIR[PT.BISHOP])
 # king moves in the same directions as queen
 PIECE_DIR[PT.KING] = PIECE_DIR[PT.QUEEN]
 
+#     Bitboard style: Attacks are regardless of
+#     - what is actually on square
+#     - what is occupying the targets
+#     - legality
+#
+#     Move generation is left to another function.
 
-def stepper_attacks(sq: square, piece_type: PieceType):
-    """Generate attacked squares of pieces that don't depend on occupancy
-    (king, knight)
+def knight_attacks(sq: square):
+    """Generate attacked squares for knight"""
 
-    Pawn depends on color.
-
-    Bitboard style: Attacks are regardless of
-    - what is actually on square
-    - what is occupying the targets
-    - legality
-
-    Move generation is left to another function.
-    """
-    if piece_type not in (PT.KNIGHT, PT.KING):
-        raise ValueError
-
-    for direction in PIECE_DIR[piece_type]:
+    for direction in KNIGHT_DIRECTIONS:
         step_square = sq + direction
         if sq_valid(step_square):
             yield step_square
+
 
 # # TODO: MAJOR OVERHAUL
 # def generate_piece_attacks(self, side) -> Iterator[Move]:

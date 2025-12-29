@@ -1,12 +1,12 @@
 from movegen import *
 
 def test_knight():
-    targets = stepper_attacks(SQ.D5, PieceType.KNIGHT)
+    targets = knight_attacks(SQ.D5)
     assert sorted(targets) == [
         SQ.C3, SQ.E3, SQ.B4, SQ.F4, SQ.B6, SQ.F6, SQ.C7, SQ.E7
     ]
 
-    targets = stepper_attacks(SQ.H1, PieceType.KNIGHT)
+    targets = knight_attacks(SQ.H1)
     assert sorted(targets) == [SQ.F2, SQ.G3]
 
 
