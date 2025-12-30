@@ -36,7 +36,6 @@ PIECE_DIRECTIONS = {
     PieceType.KING: ROOK_DIRECTIONS + BISHOP_DIRECTIONS,
 }
 
-
 #     Bitboard style: Attacks are regardless of
 #     - what is actually on square
 #     - what is occupying the targets
@@ -86,6 +85,20 @@ def slider_attacks(sq: square, occupancy: list[PieceCode], piece_type: PieceType
             if occupancy[new_sq] != PieceCode.EMPTY:
                 break
             new_sq += direction
+
+
+def pawn_attacks(sq:square, color: Color):
+    """Pawn attacks only, no forward moves"""
+    assert sq_row(sq) not in (0, 7)  # illegal pawn row
+    assert color != Color.NEUTRAL
+
+    directions = ([Direction.NE, Direction.NW] if color == Color.WHITE
+                  else [Direction.SE, Direction.SW])
+
+    for direction in directions:
+        step_square = sq + direction
+        if sq_valid(step_square):
+            yield step_square
 
 
 #

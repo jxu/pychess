@@ -38,16 +38,14 @@ def test_queen():
     assert sorted(targets) == sorted(list(rook_targets) + list(bishop_targets))
 
 
-# def test_king_step():
-#     # doesn't include castling!
-#     pos = Position("8/8/8/3K4/6k1/8/8/8 w - - 0 1")
-#     moves = pos.generate_piece_attacks(SQ("d5"))
-#
-#
+def test_pawn_attack():
+    targets = pawn_attacks(SQ.A2, Color.WHITE)
+    assert sorted(targets) == [SQ.B3]
 
-#
-#
-#
+    targets = pawn_attacks(SQ.C7, Color.BLACK)
+    assert sorted(targets) == [SQ.B6, SQ.D6]
+
+
 # def test_pawn():
 #     pos = Position("1k3b2/6P1/8/4pPpP/3p4/1P2N3/1PPP4/1K6 w - e6 0 1")
 #
