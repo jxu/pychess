@@ -65,51 +65,29 @@ def king_attacks(sq: square):
     yield from nonslider_attacks(sq, PieceType.KING)
 
 
-# # TODO: MAJOR OVERHAUL
-# def generate_piece_attacks(self, side) -> Iterator[Move]:
-#     """Generate ALL (pseudo-legal) attacks by side
-#
-#     Includes sliders (rook, bishop, queen) and steppers (king without castling, knight)
-#     """
-#
-#     piece = self.board[orig_sq]
-#     piece_type = get_piece_type(piece)
-#
-#     if piece_type == EMPTY:
-#         return
-#
-#     # Generate no moves for not my side to move
-#     if get_color(piece) != self.side:
-#         return
-#
-#     if piece_type == PAWN:
-#         yield from self.generate_pawn(orig_sq)
-#         return
-#
-#
-#     # piece is slider or stepper
-#     is_stepper = piece_type in (KING, KNIGHT)
-#
-#     directions = PIECE_DIR[piece_type]
-#
-#     for direction in directions:
-#         sq = orig_sq + direction  # start with one step already
-#         while sq_valid(sq):
-#             move = Move(orig_sq, sq)
-#             if self.board[sq] == EMPTY:
-#                 yield move
-#                 sq += direction
-#
-#                 if is_stepper:
-#                     break
-#
-#             # same color, end here
-#             elif get_color(self.board[sq]) == get_color(self.board[orig_sq]):
-#                 break
-#             else:  # enemy
-#                 yield move
-#                 break
-#
+def slider_attacks(sq: square, occupancy: list[PieceCode], piece_type: PieceType):
+    """Generate ALL (pseudo-legal) slider attacks by square and occupancy
+
+    Occupancy represents the board and empty or non-empty, ignoring color.
+
+    Includes sliders (rook, bishop, queen)
+    Attack includes target but no further.
+    """
+    assert piece_type in (PieceType.ROOK, PieceType.BISHOP, PieceType.QUEEN)
+
+    directions = PIECE_DIRECTIONS[piece_type]
+
+    for direction in directions:
+        # start with one step already
+        new_sq = sq + direction
+
+        while sq_valid(new_sq):
+            yield new_sq
+            if occupancy[new_sq] != PieceCode.EMPTY:
+                break
+            new_sq += direction
+
+
 #
 # def generate_pawn(self, sq: int):
 #     """Generate psuedo-legal pawn movement"""

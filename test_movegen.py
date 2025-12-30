@@ -1,4 +1,5 @@
 from movegen import *
+from position import *
 
 def test_knight():
     targets = knight_attacks(SQ.D5)
@@ -14,30 +15,29 @@ def test_king():
 
     assert sorted(king_attacks(SQ.F8)) == [SQ.E7, SQ.F7, SQ.G7, SQ.E8, SQ.G8]
 
-#
-# def moves_as_str(moves):
-#     """Return moveslist as list of algebraic UCI move strings"""
-#     return sorted([str(m) for m in moves])
-#
-#
-# def test_rook():
-#     pos = Position("8/2K5/8/2R2P2/8/8/2r5/2k5 w - - 0 1")
-#     moves = pos.generate_piece_attacks(SQ("c5"))  # c5 white rook
-#
-#
-#
-#
-# def test_bishop():
-#     pos = Position("8/4P3/8/2Bk4/2b5/8/5p2/5K2 w - - 0 1")
-#     moves = pos.generate_piece_attacks(SQ("c5"))  # white bishop
-#
-#
-#
-# def test_queen():
-#     pos = Position("8/8/8/3Q4/8/8/8/8 w - - 0 1")
-#     moves = pos.generate_piece_attacks(SQ("d5"))
-#
-#
+
+def test_rook():
+    pos = Position("8/2K5/8/2R2P2/8/8/2r5/2k5 w - - 0 1")
+    targets = slider_attacks(SQ.C5, pos.board, PieceType.ROOK)
+    assert (sorted(targets) ==
+            [SQ.C2, SQ.C3, SQ.C4, SQ.A5, SQ.B5, SQ.D5, SQ.E5, SQ.F5, SQ.C6, SQ.C7])
+
+def test_bishop():
+    pos = Position("8/4P3/8/2Bk4/2b5/8/5p2/5K2 w - - 0 1")
+    targets = slider_attacks(SQ.C5, pos.board, PieceType.BISHOP)
+    assert (sorted(targets) ==
+            [SQ.F2, SQ.A3, SQ.E3, SQ.B4, SQ.D4, SQ.B6, SQ.D6, SQ.A7, SQ.E7])
+
+
+def test_queen():
+    pos = Position("8/8/8/3Q4/8/8/8/8 w - - 0 1")
+    targets = slider_attacks(SQ.D5, pos.board, PieceType.QUEEN)
+    # lazy way to test
+    rook_targets = slider_attacks(SQ.D5, pos.board, PieceType.ROOK)
+    bishop_targets = slider_attacks(SQ.D5, pos.board, PieceType.BISHOP)
+    assert sorted(targets) == sorted(list(rook_targets) + list(bishop_targets))
+
+
 # def test_king_step():
 #     # doesn't include castling!
 #     pos = Position("8/8/8/3K4/6k1/8/8/8 w - - 0 1")
