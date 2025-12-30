@@ -25,8 +25,8 @@ class Move:
     """
     def __init__(
             self,
-            from_sq: Square,
-            to_sq: Square,
+            from_sq: BoardSquare,
+            to_sq: BoardSquare,
             capture=False,
             promotion=PieceType.EMPTY,
             double_pawn_push=False,
