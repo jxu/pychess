@@ -24,14 +24,18 @@ KNIGHT_DIRECTIONS = (
     Dir.W + Dir.NW,
 )
 
-PIECE_DIR = {
-    PieceType.ROOK: (Dir.N, Dir.E, Dir.S, Dir.W),
-    PieceType.BISHOP: (Dir.NE, Dir.SE, Dir.SW, Dir.NW),
+ROOK_DIRECTIONS : tuple = (Dir.N, Dir.E, Dir.S, Dir.W)
+BISHOP_DIRECTIONS : tuple = (Dir.NE, Dir.SE, Dir.SW, Dir.NW)
 
+# doesn't include pawn attacks for now
+PIECE_DIRECTIONS = {
+    PieceType.KNIGHT: KNIGHT_DIRECTIONS,
+    PieceType.ROOK: ROOK_DIRECTIONS,
+    PieceType.BISHOP: BISHOP_DIRECTIONS,
+    PieceType.QUEEN: ROOK_DIRECTIONS + BISHOP_DIRECTIONS,
+    PieceType.KING: ROOK_DIRECTIONS + BISHOP_DIRECTIONS,
 }
-PIECE_DIR[PT.QUEEN] = (PIECE_DIR[PT.ROOK] + PIECE_DIR[PT.BISHOP])
-# king moves in the same directions as queen
-PIECE_DIR[PT.KING] = PIECE_DIR[PT.QUEEN]
+
 
 #     Bitboard style: Attacks are regardless of
 #     - what is actually on square
@@ -40,13 +44,25 @@ PIECE_DIR[PT.KING] = PIECE_DIR[PT.QUEEN]
 #
 #     Move generation is left to another function.
 
-def knight_attacks(sq: square):
-    """Generate attacked squares for knight"""
+def nonslider_attacks(sq: square, piece_type: PieceType):
+    """Generate attacked squares for king and knight
 
-    for direction in KNIGHT_DIRECTIONS:
+    King castling not handled here
+    """
+    assert piece_type in (PieceType.KING, PieceType.KNIGHT)
+
+    for direction in PIECE_DIRECTIONS[piece_type]:
         step_square = sq + direction
         if sq_valid(step_square):
             yield step_square
+
+
+def knight_attacks(sq: square):
+    yield from nonslider_attacks(sq, PieceType.KNIGHT)
+
+
+def king_attacks(sq: square):
+    yield from nonslider_attacks(sq, PieceType.KING)
 
 
 # # TODO: MAJOR OVERHAUL

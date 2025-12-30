@@ -2,13 +2,17 @@ from movegen import *
 
 def test_knight():
     targets = knight_attacks(SQ.D5)
-    assert sorted(targets) == [
-        SQ.C3, SQ.E3, SQ.B4, SQ.F4, SQ.B6, SQ.F6, SQ.C7, SQ.E7
-    ]
+    assert sorted(targets) == [SQ.C3, SQ.E3, SQ.B4, SQ.F4, SQ.B6, SQ.F6, SQ.C7, SQ.E7]
 
     targets = knight_attacks(SQ.H1)
     assert sorted(targets) == [SQ.F2, SQ.G3]
 
+
+def test_king():
+    targets = king_attacks(SQ.D4)
+    assert sorted(targets) == [SQ.C3, SQ.D3, SQ.E3, SQ.C4, SQ.E4, SQ.C5, SQ.D5, SQ.E5]
+
+    assert sorted(king_attacks(SQ.F8)) == [SQ.E7, SQ.F7, SQ.G7, SQ.E8, SQ.G8]
 
 #
 # def moves_as_str(moves):
