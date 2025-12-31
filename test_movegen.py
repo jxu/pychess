@@ -22,6 +22,12 @@ def test_rook():
     assert (sorted(targets) ==
             [SQ.C2, SQ.C3, SQ.C4, SQ.A5, SQ.B5, SQ.D5, SQ.E5, SQ.F5, SQ.C6, SQ.C7])
 
+    # pseudo-legal move targets
+    white_targets = slider_generate(SQ.C5, pos.board, PieceType.ROOK, Color.WHITE)
+    assert (sorted(white_targets) ==
+            [SQ.C2, SQ.C3, SQ.C4, SQ.A5, SQ.B5, SQ.D5, SQ.E5, SQ.C6])
+
+
 def test_bishop():
     pos = Position("8/4P3/8/2Bk4/2b5/8/5p2/5K2 w - - 0 1")
     targets = slider_attacks(SQ.C5, pos.board, PieceType.BISHOP)
@@ -44,6 +50,8 @@ def test_pawn_attack():
 
     targets = pawn_attacks(SQ.C7, Color.BLACK)
     assert sorted(targets) == [SQ.B6, SQ.D6]
+
+
 
 
 # def test_pawn():

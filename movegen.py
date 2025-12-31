@@ -1,4 +1,4 @@
-from board import *
+from position import *
 
 class Direction(IntEnum):
     N = 16
@@ -100,6 +100,14 @@ def pawn_attacks(sq:square, color: Color):
         if sq_valid(step_square):
             yield step_square
 
+
+def slider_generate(sq: square, board: list[PieceCode], piece_type: PieceType, color: Color):
+    """Generate pseudo-legal slider targets"""
+    attacks = slider_attacks(sq, occupancy=board, piece_type=piece_type)
+    for target in attacks:
+        # filter out self-captures
+        if get_color(board[target]) != color:
+            yield target
 
 #
 # def generate_pawn(self, sq: int):
