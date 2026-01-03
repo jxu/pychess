@@ -102,7 +102,7 @@ def pawn_attacks(sq:square, color: Color):
 
 
 def slider_generate(sq: square, board: list[PieceCode], piece_type: PieceType, color: Color):
-    """Generate pseudo-legal slider targets"""
+    """Generate pseudo-legal slider targets, with occupancy"""
     attacks = slider_attacks(sq, occupancy=board, piece_type=piece_type)
     for target in attacks:
         # filter out self-captures

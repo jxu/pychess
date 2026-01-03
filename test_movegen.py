@@ -27,6 +27,10 @@ def test_rook():
     assert (sorted(white_targets) ==
             [SQ.C2, SQ.C3, SQ.C4, SQ.A5, SQ.B5, SQ.D5, SQ.E5, SQ.C6])
 
+    black_targets = slider_generate(SQ.C2, pos.board, PieceType.ROOK, Color.BLACK)
+    assert (sorted(black_targets) ==
+            [SQ.A2, SQ.B2, SQ.D2, SQ.E2, SQ.F2, SQ.G2, SQ.H2, SQ.C3, SQ.C4, SQ.C5])
+
 
 def test_bishop():
     pos = Position("8/4P3/8/2Bk4/2b5/8/5p2/5K2 w - - 0 1")
